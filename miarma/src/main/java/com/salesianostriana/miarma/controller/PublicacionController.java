@@ -13,12 +13,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -33,6 +31,13 @@ public class PublicacionController {
     @PostMapping("/")
     public ResponseEntity<GetPublicacionDto> create(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
         Publicacion nuevaP = service.create(dto, user);
+        GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
+        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<GetPublicacionDto> edit(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user, UUID id){
+        Publicacion nuevaP = service.edit(dto, user, id);
         GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);
     }
