@@ -14,6 +14,8 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class UserController {
@@ -22,7 +24,7 @@ public class UserController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<GetUserDto> nuevoUsuario(@RequestBody CreateUserDto newUser){
+    public ResponseEntity<GetUserDto> nuevoUsuario(@Valid @RequestBody CreateUserDto newUser){
 
         UserEntity saved = userEntityService.saveUser(newUser);
         if(saved == null){

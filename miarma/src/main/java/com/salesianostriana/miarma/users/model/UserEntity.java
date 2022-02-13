@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.users.model;
 
 
+import com.salesianostriana.miarma.models.Publicacion;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -10,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -39,6 +41,13 @@ public class UserEntity implements UserDetails {
     private String password;
 
     private boolean privado;
+
+    @ManyToMany
+    private List<UserEntity> followers;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @Builder.Default
+    private List<Publicacion> publicaciones = new ArrayList<>();
 
     @CreatedDate
     private LocalDateTime createdAt;
