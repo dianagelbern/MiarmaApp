@@ -16,7 +16,7 @@ public class Publicacion {
 
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private UUID id;
 
     private String titulo;
@@ -27,4 +27,11 @@ public class Publicacion {
     @ManyToOne
     @JoinColumn(name = "autor")
     private UserEntity user;
+
+    public void addToUser(UserEntity u){
+        user = u;
+        u.getPublicaciones().add(this);
+    }
+
+
 }
