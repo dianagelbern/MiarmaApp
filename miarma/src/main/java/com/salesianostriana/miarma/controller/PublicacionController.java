@@ -26,8 +26,7 @@ public class PublicacionController {
     private final PublicacionesService service;
     private final PublicacionDtoConverter converter;
     private final UserDtoConverter userDtoConverter;
-
-
+    
     @PostMapping("/")
     public ResponseEntity<GetPublicacionDto> create(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
         Publicacion nuevaP = service.create(dto, user);
@@ -36,7 +35,7 @@ public class PublicacionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<GetPublicacionDto> edit(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user, UUID id){
+    public ResponseEntity<GetPublicacionDto> edit(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user, Long id){
         Publicacion nuevaP = service.edit(dto, user, id);
         GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);

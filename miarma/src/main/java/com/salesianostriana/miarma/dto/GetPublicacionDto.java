@@ -12,7 +12,7 @@ import java.util.UUID;
 @Setter
 @Builder
 public class GetPublicacionDto {
-    private UUID id;
+    private Long id;
     private String titulo;
     private String texto;
     private String multimedia;

@@ -16,8 +16,8 @@ public class Publicacion {
 
 
     @Id
-    @GeneratedValue
-    private UUID id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     private String titulo;
     private String texto;

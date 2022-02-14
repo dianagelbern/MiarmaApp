@@ -10,16 +10,18 @@ import com.salesianostriana.miarma.service.base.BaseService;
 import com.salesianostriana.miarma.users.model.UserEntity;
 import com.salesianostriana.miarma.users.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import javax.swing.text.html.parser.Entity;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
-public class PublicacionesService extends BaseService<Publicacion, UUID, PublicacionRepository> {
+public class PublicacionesService extends BaseService<Publicacion, Long, PublicacionRepository> {
 
 
     private final PublicacionRepository repository;
@@ -35,7 +37,7 @@ public class PublicacionesService extends BaseService<Publicacion, UUID, Publica
         return repository.save(nuevaP);
     }
 
-    public Publicacion edit(CreatePublicacionDto p, UserEntity user, UUID id){
+    public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id){
         Optional<Publicacion> publicacion = repository.findById(id);
         if(user.getPublicaciones().contains(publicacion.get())){
             Publicacion nuevaP = Publicacion.builder()
@@ -51,5 +53,12 @@ public class PublicacionesService extends BaseService<Publicacion, UUID, Publica
             throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
         }
     }
+
+    /*
+    public Publicacion findAllPublic(){
+        List<Publicacion> publicaciones = repository.findAll();
+        //if()
+    }
+     */
 
 }
