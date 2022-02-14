@@ -8,48 +8,31 @@ import com.salesianostriana.miarma.users.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class UserController {
 
     private final UserEntityService userEntityService;
     private final UserDtoConverter userDtoConverter;
 
-    @PostMapping("/auth/register")
-    public ResponseEntity<GetUserDto> nuevoUsuario(@Valid @RequestBody CreateUserDto newUser){
+    @PostMapping("/register")
+    public ResponseEntity<GetUserDto> nuevoUsuario(@RequestPart("file") MultipartFile file, @RequestPart("user") CreateUserDto newUser){
 
-        UserEntity saved = userEntityService.saveUser(newUser);
+        UserEntity saved = userEntityService.saveUser(newUser, file);
         if(saved == null){
             return ResponseEntity.badRequest().build();
         }else{
-            return ResponseEntity.ok(userDtoConverter.convertUserToGetUserDto(saved));
+            return ResponseEntity.status(HttpStatus.CREATED).body(userDtoConverter.convertUserToGetUserDto(saved));
         }
 
     }
 
-    /*
-    @PostMapping("/auth/register")
-    public ResponseEntity<?> nuevoUsuario(@RequestPart("user") CreateUserDto newUser, @RequestPart("file")MultipartFile file){
-
-        return ResponseEntity.status(HttpStatus.CREATED)
-                .body(userEntityService.saveUser(newUser, file));
-        /*
-        UserEntity saved = userEntityService.saveUser(newUser);
-        if(saved == null){
-            return ResponseEntity.badRequest().build();
-        }else{
-            return ResponseEntity.ok(userDtoConverter.convertUserToGetUserDto(saved));
-        }
-        }
-     */
 
 
 

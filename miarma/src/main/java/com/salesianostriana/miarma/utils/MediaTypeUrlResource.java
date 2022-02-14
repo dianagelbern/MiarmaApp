@@ -10,6 +10,7 @@ import java.net.URI;
 import java.net.URL;
 
 public class MediaTypeUrlResource extends UrlResource {
+
     public MediaTypeUrlResource(URI uri) throws MalformedURLException {
         super(uri);
     }
@@ -30,12 +31,12 @@ public class MediaTypeUrlResource extends UrlResource {
         super(protocol, location, fragment);
     }
 
-    public String getTipe(){
+    public String getType() {
         Tika tika = new Tika();
         try {
             return tika.detect(this.getFile());
-        }catch (IOException e){
-            throw new StorageException("Errir obteniendo el tipo MIME del fichero", e);
+        } catch (IOException e) {
+            throw new StorageException("Error obteniendo el tipo MIME del fichero", e);
         }
     }
 }

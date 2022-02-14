@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.users.services;
 
 import com.salesianostriana.miarma.service.base.BaseService;
+import com.salesianostriana.miarma.service.base.StorageService;
 import com.salesianostriana.miarma.users.dto.CreateUserDto;
 import com.salesianostriana.miarma.users.model.UserEntity;
 import com.salesianostriana.miarma.users.model.UserRole;
@@ -11,6 +12,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -21,6 +24,7 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
 
 
     private final PasswordEncoder passwordEncoder;
+    private final StorageService storageService;
 
     public Optional <UserEntity> findByUsername(String userName){
         return this.repositorio.findFirstByEmail(userName);
@@ -33,36 +37,16 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
     }
 
 
-    public UserEntity saveUser (CreateUserDto newUser){
-        if(newUser.getPassword().contentEquals(newUser.getPassword2())) {
-
-            UserEntity userEntity = UserEntity.builder()
-                    .nick(newUser.getNick())
-                    .password(passwordEncoder.encode(newUser.getPassword()))
-                    .email(newUser.getEmail())
-                    .fechaNacimiento(newUser.getFechaNacimiento())
-                    .role(UserRole.USER)
-                    .privado(newUser.isPrivado())
-                    .avatar(newUser.getAvatar())
-                    .build();
-            return save(userEntity);
-
-        }else {
-            return null;
-        }
-
-    }
-
-    /*
     public UserEntity saveUser (CreateUserDto newUser, MultipartFile file){
+
+        String filename = storageService.store(file);
+
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+
         if(newUser.getPassword().contentEquals(newUser.getPassword2())) {
-
-            String filename = storageService.store(file);
-
-            String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                    .path("/download/")
-                    .path(filename)
-                    .toUriString();
 
             UserEntity userEntity = UserEntity.builder()
                     .nick(newUser.getNick())
@@ -80,7 +64,5 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
         }
 
     }
-     */
-
 
 }
