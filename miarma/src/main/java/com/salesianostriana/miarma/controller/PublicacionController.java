@@ -26,7 +26,7 @@ public class PublicacionController {
     private final PublicacionesService service;
     private final PublicacionDtoConverter converter;
     private final UserDtoConverter userDtoConverter;
-    
+
     @PostMapping("/")
     public ResponseEntity<GetPublicacionDto> create(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
         Publicacion nuevaP = service.create(dto, user);
