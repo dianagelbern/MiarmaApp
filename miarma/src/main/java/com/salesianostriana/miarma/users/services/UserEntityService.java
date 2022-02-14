@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.nio.file.Files;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -37,14 +40,21 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
     }
 
 
-    public UserEntity saveUser (CreateUserDto newUser, MultipartFile file){
+    public UserEntity saveUser (CreateUserDto newUser, MultipartFile file) throws Exception{
 
         String filename = storageService.store(file);
+        BufferedImage original = ImageIO.read(file.getInputStream());
+        BufferedImage reescalada = storageService.resizeImage(original, 128, 128);
+
+        ImageIO.write(reescalada, "jpg", Files.newOutputStream(storageService.load(filename)));
 
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
                 .path(filename)
                 .toUriString();
+
+
+
 
         if(newUser.getPassword().contentEquals(newUser.getPassword2())) {
 

@@ -5,6 +5,7 @@ import com.salesianostriana.miarma.exception.FileNotFoundException;
 import com.salesianostriana.miarma.exception.StorageException;
 import com.salesianostriana.miarma.service.base.StorageService;
 import com.salesianostriana.miarma.utils.MediaTypeUrlResource;
+import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +15,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -118,4 +123,32 @@ public class FileSystemStorageService implements StorageService {
     public void deleteAll() {
         FileSystemUtils.deleteRecursively(rootLocation.toFile());
     }
+
+    @Override
+    public BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws Exception {
+        ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+        Thumbnails.of(originalImage)
+                .size(targetWidth, targetHeight)
+                .outputFormat("JPEG")
+                .outputQuality(1)
+                .toOutputStream(outputStream);
+        byte[] data = outputStream.toByteArray();
+        ByteArrayInputStream inputStream = new ByteArrayInputStream(data);
+        return ImageIO.read(inputStream);
+    }
 }
+/*
+        byte[] byteImg = Files.readAllBytes(Paths.get("triana.jpeg"));
+
+        BufferedImage original = ImageIO.read(
+                new ByteArrayInputStream(byteImg)
+        );
+
+
+        BufferedImage scaled = Scalr.resize(original, 512);
+
+
+        OutputStream out = Files.newOutputStream(Paths.get("triana-thumb.jpeg"));
+
+        ImageIO.write(scaled, "jpg", out);
+         */

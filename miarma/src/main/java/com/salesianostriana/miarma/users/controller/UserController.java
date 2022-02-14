@@ -22,7 +22,7 @@ public class UserController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/register")
-    public ResponseEntity<GetUserDto> nuevoUsuario(@RequestPart("file") MultipartFile file, @RequestPart("user") CreateUserDto newUser){
+    public ResponseEntity<GetUserDto> nuevoUsuario(@RequestPart("file") MultipartFile file, @RequestPart("user") CreateUserDto newUser) throws Exception{
 
         UserEntity saved = userEntityService.saveUser(newUser, file);
         if(saved == null){
