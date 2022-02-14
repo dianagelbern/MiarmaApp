@@ -14,9 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
@@ -28,8 +28,8 @@ public class PublicacionController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/")
-    public ResponseEntity<GetPublicacionDto> create(@Valid @RequestBody CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
-        Publicacion nuevaP = service.create(dto, user);
+    public ResponseEntity<GetPublicacionDto> create(@RequestPart("file") MultipartFile file, @RequestPart("publicacion") CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
+        Publicacion nuevaP = service.create(file, dto, user);
         GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);
     }
