@@ -17,7 +17,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.imageio.ImageIO;
 import javax.swing.text.html.parser.Entity;
+import java.awt.image.BufferedImage;
+import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -30,9 +33,19 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
     private final PublicacionRepository repository;
     private final StorageService storageService;
 
-    public Publicacion create(MultipartFile file, CreatePublicacionDto p, UserEntity user ) {
+    public Publicacion create(MultipartFile file, CreatePublicacionDto p, UserEntity user ) throws Exception {
         String filename = storageService.store(file);
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+
+        String filenameScale = storageService.store(file);
+        BufferedImage original = ImageIO.read(file.getInputStream());
+        BufferedImage reescalada = storageService.resizeImage(original, 128, 128);
+        ImageIO.write(reescalada, "jpg", Files.newOutputStream(storageService.load(filenameScale)));
+
+        String uriScale = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
                 .path(filename)
                 .toUriString();
@@ -42,6 +55,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                 .texto(p.getTexto())
                 .privada(p.isPrivada())
                 .multimedia(uri)
+                .multimediaScale(uriScale)
                 .build();
         nuevaP.addToUser(user);
         return repository.save(nuevaP);

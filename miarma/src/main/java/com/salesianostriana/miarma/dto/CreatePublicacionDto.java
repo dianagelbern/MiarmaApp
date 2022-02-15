@@ -14,4 +14,5 @@ public class CreatePublicacionDto {
     private String texto;
     private String multimedia;
     private boolean privada;
+    private String multimediaScale;
 }

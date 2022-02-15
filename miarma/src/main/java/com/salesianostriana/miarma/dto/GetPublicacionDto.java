@@ -18,4 +18,5 @@ public class GetPublicacionDto {
     private String multimedia;
     private boolean privada;
     private GetUserDto autor;
+    private String multimediaScale;
 }

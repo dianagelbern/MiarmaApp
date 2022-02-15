@@ -22,6 +22,7 @@ public class Publicacion {
     private String titulo;
     private String texto;
     private String multimedia;
+    private String multimediaScale;
     private boolean privada;
 
     @ManyToOne

@@ -29,7 +29,7 @@ public class PublicacionController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/")
-    public ResponseEntity<GetPublicacionDto> create(@RequestPart("file") MultipartFile file, @RequestPart("publicacion") CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user){
+    public ResponseEntity<GetPublicacionDto> create(@RequestPart("file") MultipartFile file, @RequestPart("publicacion") CreatePublicacionDto dto, @AuthenticationPrincipal UserEntity user) throws Exception{
         Publicacion nuevaP = service.create(file, dto, user);
         GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);

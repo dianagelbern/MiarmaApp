@@ -20,6 +20,7 @@ public class PublicacionDtoConverter {
                 .texto(p.getTexto())
                 .privada(p.isPrivada())
                 .multimedia(p.getMultimedia())
+                .multimediaScale(p.getMultimediaScale())
                 .autor(u)
                 .build();
     }
@@ -29,6 +30,7 @@ public class PublicacionDtoConverter {
                 .titulo(p.getTitulo())
                 .texto(p.getTexto())
                 .privada(p.isPrivada())
+                .multimediaScale(p.getMultimediaScale())
                 .multimedia(p.getMultimedia()).build();
     }
 
