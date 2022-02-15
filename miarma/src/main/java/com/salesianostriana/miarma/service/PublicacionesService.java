@@ -64,11 +64,10 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
         }
     }
 
-    /*
-    public Publicacion findAllPublic(){
-        List<Publicacion> publicaciones = repository.findAll();
-        //if()
+
+    public Optional<Publicacion> findAOne(Long id){
+        return repository.findById(id);
     }
-     */
+
 
 }

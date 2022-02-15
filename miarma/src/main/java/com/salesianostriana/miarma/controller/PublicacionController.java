@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor
@@ -39,5 +40,10 @@ public class PublicacionController {
         Publicacion nuevaP = service.edit(dto, user, id);
         GetPublicacionDto nuevaPDto = converter.publicacionToGetPublicacionDto(nuevaP, userDtoConverter.convertUserToGetUserDto(user));
         return ResponseEntity.status(HttpStatus.CREATED).body(nuevaPDto);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<Publicacion> findById(Long id){
+        return ResponseEntity.of(service.findAOne(id));
     }
 }
