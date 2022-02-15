@@ -1,4 +1,4 @@
-package com.salesianostriana.miarma.users.dto;
+package com.salesianostriana.miarma.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

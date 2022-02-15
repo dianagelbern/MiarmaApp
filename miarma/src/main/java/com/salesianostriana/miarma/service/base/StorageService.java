@@ -1,8 +1,8 @@
 package com.salesianostriana.miarma.service.base;
 
+import com.salesianostriana.miarma.utils.MediaTypeUrlResource;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.annotation.Resource;
 import java.awt.image.BufferedImage;
 import java.nio.file.Path;
 import java.util.stream.Stream;
@@ -16,7 +16,7 @@ public interface StorageService {
 
     Path load(String filename);
 
-    Resource loadAsResource(String filename);
+    MediaTypeUrlResource loadAsResource(String filename);
 
     void deleteFile(String filename);
 

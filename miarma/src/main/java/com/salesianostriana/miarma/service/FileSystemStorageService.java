@@ -14,7 +14,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
@@ -96,13 +95,13 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public Resource loadAsResource(String filename) {
+    public MediaTypeUrlResource loadAsResource(String filename) {
 
         try {
             Path file = load(filename);
             MediaTypeUrlResource resource = new MediaTypeUrlResource(file.toUri());
             if (resource.exists() || resource.isReadable()) {
-                return (Resource) resource;
+                return resource;
             }
             else {
                 throw new FileNotFoundException(

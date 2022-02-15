@@ -4,10 +4,12 @@ import com.salesianostriana.miarma.exception.StorageException;
 import org.apache.tika.Tika;
 import org.springframework.core.io.UrlResource;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+
 
 public class MediaTypeUrlResource extends UrlResource {
 
