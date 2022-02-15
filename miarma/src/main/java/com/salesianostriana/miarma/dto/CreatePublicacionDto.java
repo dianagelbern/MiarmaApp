@@ -9,7 +9,7 @@ import lombok.*;
 @Getter
 @Setter
 public class CreatePublicacionDto {
-
+    private Long id;
     private String titulo;
     private String texto;
     private String multimedia;

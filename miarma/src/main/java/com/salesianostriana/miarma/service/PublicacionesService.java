@@ -1,29 +1,21 @@
 package com.salesianostriana.miarma.service;
 
 import com.salesianostriana.miarma.dto.CreatePublicacionDto;
-import com.salesianostriana.miarma.dto.GetPublicacionDto;
-import com.salesianostriana.miarma.dto.PublicacionDtoConverter;
 import com.salesianostriana.miarma.errores.excepciones.EntityNotFoundException;
 import com.salesianostriana.miarma.models.Publicacion;
 import com.salesianostriana.miarma.repos.PublicacionRepository;
 import com.salesianostriana.miarma.service.base.BaseService;
 import com.salesianostriana.miarma.service.base.StorageService;
 import com.salesianostriana.miarma.users.model.UserEntity;
-import com.salesianostriana.miarma.users.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
-import javax.swing.text.html.parser.Entity;
 import java.awt.image.BufferedImage;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -61,26 +53,53 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
         return repository.save(nuevaP);
     }
 
-    public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id){
+    public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id, MultipartFile file){
         Optional<Publicacion> publicacion = repository.findById(id);
-        if(user.getPublicaciones().contains(publicacion.get())){
-            Publicacion nuevaP = Publicacion.builder()
+
+        String filename = storageService.store(file);
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+
+        if(publicacion.isPresent()){
+            Publicacion publiEncontrada = publicacion.get();
+            publiEncontrada = Publicacion.builder()
+                    .id(p.getId())
                     .titulo(p.getTitulo())
                     .texto(p.getTexto())
                     .privada(p.isPrivada())
-                    .multimedia(p.getMultimedia())
+                    .multimedia(uri)
                     .build();
-            nuevaP.addToUser(user);
-            return repository.save(nuevaP);
+            return repository.save(publiEncontrada);
         }
         else {
             throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
         }
     }
 
+    public void deleteById(Long id){
+        Optional<Publicacion> publicacion = repository.findById(id);
+        if(publicacion.isPresent()) {
+            Publicacion publiEncontrada = publicacion.get();
+            repository.deleteById(id);
+        }else{
+            throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
+        }
+
+    }
 
     public Optional<Publicacion> findAOne(Long id){
-        return repository.findById(id);
+        Optional<Publicacion> publicacion = repository.findById(id);
+        Publicacion publiEncontrada = publicacion.get();
+
+        if(publicacion.isPresent()) {
+            //if(publiEncontrada.getUser().isPrivado() == false ){
+                return repository.findById(id);
+            //}
+        }else{
+            throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
+        }
     }
 
 

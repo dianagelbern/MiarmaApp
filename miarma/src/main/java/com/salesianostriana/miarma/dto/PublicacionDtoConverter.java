@@ -27,6 +27,7 @@ public class PublicacionDtoConverter {
 
     public Publicacion createPublicacionDtoToPublicacion(CreatePublicacionDto p){
         return Publicacion.builder()
+                .id(p.getId())
                 .titulo(p.getTitulo())
                 .texto(p.getTexto())
                 .privada(p.isPrivada())
