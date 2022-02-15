@@ -45,7 +45,7 @@ public class UserEntity implements UserDetails {
     @ManyToMany
     private List<UserEntity> followers;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.EAGER, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
     private List<Publicacion> publicaciones = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class UserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private UserRole role;
-    
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
