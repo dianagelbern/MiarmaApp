@@ -1,6 +1,7 @@
 package com.salesianostriana.miarma.errores;
 
 import com.salesianostriana.miarma.errores.excepciones.ElementosRepetidosException;
+import com.salesianostriana.miarma.errores.excepciones.SingleEntityNotFoundException;
 import com.salesianostriana.miarma.errores.modelo.ApiError;
 import com.salesianostriana.miarma.errores.modelo.ApiSubError;
 import com.salesianostriana.miarma.errores.modelo.ApiValidationSubError;
@@ -12,6 +13,7 @@ import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
@@ -20,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@RestController
+@RestControllerAdvice
 public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     @Override
@@ -61,6 +63,11 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({EntityNotFoundException.class})
     public ResponseEntity<?> handleNotFoundException(EntityNotFoundException exception, WebRequest request) {
+        return buildApiError(exception, HttpStatus.NOT_FOUND, request, new ArrayList<>());
+    }
+
+    @ExceptionHandler({SingleEntityNotFoundException.class})
+    public ResponseEntity<?> handleNotFoundException(SingleEntityNotFoundException exception, WebRequest request) {
         return buildApiError(exception, HttpStatus.NOT_FOUND, request, new ArrayList<>());
     }
 

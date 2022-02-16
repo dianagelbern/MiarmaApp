@@ -2,6 +2,7 @@ package com.salesianostriana.miarma.service;
 
 import com.salesianostriana.miarma.dto.CreatePublicacionDto;
 import com.salesianostriana.miarma.errores.excepciones.EntityNotFoundException;
+import com.salesianostriana.miarma.errores.excepciones.SingleEntityNotFoundException;
 import com.salesianostriana.miarma.models.Publicacion;
 import com.salesianostriana.miarma.repos.PublicacionRepository;
 import com.salesianostriana.miarma.service.base.BaseService;
@@ -84,7 +85,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
             Publicacion publiEncontrada = publicacion.get();
             repository.deleteById(id);
         }else{
-            throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
+            throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
         }
 
     }
@@ -98,7 +99,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                 return repository.findById(id);
             //}
         }else{
-            throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
+            throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
         }
     }
 
