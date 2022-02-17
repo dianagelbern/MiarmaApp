@@ -17,6 +17,6 @@ public class GetPublicacionDto {
     private String texto;
     private String multimedia;
     private boolean privada;
-    private GetUserDto autor;
+    //private UUID autor;
     private String multimediaScale;
 }

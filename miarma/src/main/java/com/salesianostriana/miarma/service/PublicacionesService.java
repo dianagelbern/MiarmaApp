@@ -1,22 +1,31 @@
 package com.salesianostriana.miarma.service;
 
 import com.salesianostriana.miarma.dto.CreatePublicacionDto;
+import com.salesianostriana.miarma.dto.GetPublicacionDto;
+import com.salesianostriana.miarma.dto.PublicacionDtoConverter;
 import com.salesianostriana.miarma.errores.excepciones.EntityNotFoundException;
 import com.salesianostriana.miarma.errores.excepciones.SingleEntityNotFoundException;
+import com.salesianostriana.miarma.errores.excepciones.StorageException;
 import com.salesianostriana.miarma.models.Publicacion;
 import com.salesianostriana.miarma.repos.PublicacionRepository;
 import com.salesianostriana.miarma.service.base.BaseService;
 import com.salesianostriana.miarma.service.base.StorageService;
 import com.salesianostriana.miarma.users.model.UserEntity;
+import com.salesianostriana.miarma.users.services.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +34,10 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
 
     private final PublicacionRepository repository;
     private final StorageService storageService;
+    private final PublicacionDtoConverter converter;
+    private final UserEntityService userEntityService;
 
-    public Publicacion create(MultipartFile file, CreatePublicacionDto p, UserEntity user ) throws Exception {
+    public Publicacion create(MultipartFile file, CreatePublicacionDto p, UserEntity user) throws Exception {
         String filename = storageService.store(file);
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
@@ -48,14 +59,16 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                 .texto(p.getTexto())
                 .privada(p.isPrivada())
                 .multimedia(uri)
+                .user(user)
                 .multimediaScale(uriScale)
                 .build();
-        nuevaP.addToUser(user);
+
         return repository.save(nuevaP);
     }
 
-    public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id, MultipartFile file){
+    public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id, MultipartFile file) {
         Optional<Publicacion> publicacion = repository.findById(id);
+
 
         String filename = storageService.store(file);
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
@@ -63,50 +76,65 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                 .path(filename)
                 .toUriString();
 
-        if(publicacion.isPresent()){
+
+
+
+        if (publicacion.isPresent()) {
             Publicacion publiEncontrada = publicacion.get();
-            publiEncontrada = Publicacion.builder()
-                    .id(p.getId())
-                    .titulo(p.getTitulo())
-                    .texto(p.getTexto())
-                    .privada(p.isPrivada())
-                    .multimedia(uri)
-                    .build();
+
+            publiEncontrada.setId(id);
+            publiEncontrada.setTitulo(p.getTitulo());
+            publiEncontrada.setTexto(p.getTexto());
+            publiEncontrada.setPrivada(p.isPrivada());
+            publiEncontrada.setMultimedia(uri);
+
             return repository.save(publiEncontrada);
-        }
-        else {
+        } else {
             throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
         }
     }
 
-    public void deleteById(Long id){
+    public void deleteById(Long id, UserEntity user) throws IOException {
         Optional<Publicacion> publicacion = repository.findById(id);
-        if(publicacion.isPresent()) {
+
+        if (publicacion.isPresent()) {
             Publicacion publiEncontrada = publicacion.get();
-            repository.deleteById(id);
-        }else{
+
+
+            if (publiEncontrada.getUser().getNick().equals(user.getNick())) {
+                String nombreFichero = StringUtils.cleanPath(publiEncontrada.getMultimedia());
+                String[] arrayNombre = nombreFichero.split("/");
+                storageService.deleteFile(arrayNombre[arrayNombre.length - 1]);
+                repository.deleteById(id);
+            }
+        } else
             throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
-        }
 
     }
 
-    public Optional<Publicacion> findAOne(Long id){
+    public Optional<Publicacion> findOne(Long id, UserEntity user) {
         Optional<Publicacion> publicacion = repository.findById(id);
-        Publicacion publiEncontrada = publicacion.get();
 
-        //Si la publicación es privada pero sigo al usuario ->
-        //Si la publicación es pública
-        //Si la publicación es publica pero sigo al usuario
-        //Si la publicación es privada y el usuario no es seguido
 
-        if(!publiEncontrada.getUser().isPrivado()) {
-            return repository.findById(id);
-        }else{
+        if (publicacion.isPresent()) {
+            Publicacion publiEncontrada = publicacion.get();
+            //Si la publi existe
+
+            if (!publiEncontrada.getUser().isPrivado()
+                    || !publicacion.get().isPrivada()) { //Si el usuario es publico y la publi tambien
+                return repository.findById(id);
+            } else if (publiEncontrada.getUser().getNick().equals(user.getNick())) {
+                return repository.findById(id);
+            }
+
+
+        } else {
             throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
         }
+    return Optional.empty();
     }
 
-
-
-
+    public List<GetPublicacionDto> findAllDto() {
+        return repository.findByPrivadaIsFalse().stream().map(converter::publicacionToGetPublicacionDto).collect(Collectors.toList());
+    }
 }

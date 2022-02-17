@@ -25,7 +25,7 @@ public class Publicacion {
     private String multimediaScale;
     private boolean privada;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "autor")
     private UserEntity user;
 

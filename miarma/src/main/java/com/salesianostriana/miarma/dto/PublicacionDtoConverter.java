@@ -13,7 +13,7 @@ public class PublicacionDtoConverter {
 
 
 
-    public GetPublicacionDto publicacionToGetPublicacionDto(Publicacion p, GetUserDto u){
+    public GetPublicacionDto publicacionToGetPublicacionDto(Publicacion p){
         return GetPublicacionDto.builder()
                 .id(p.getId())
                 .titulo(p.getTitulo())
@@ -21,7 +21,7 @@ public class PublicacionDtoConverter {
                 .privada(p.isPrivada())
                 .multimedia(p.getMultimedia())
                 .multimediaScale(p.getMultimediaScale())
-                .autor(u)
+                //.autor(p.getUser().getId())
                 .build();
     }
 

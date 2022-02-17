@@ -25,6 +25,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.util.List;
 import java.util.stream.Stream;
 
 @Service
@@ -50,11 +51,15 @@ public class FileSystemStorageService implements StorageService {
 
     @Override
     public String store(MultipartFile file) {
+        List<String> formats = List.of("png", "jpg", "mp4");
         String filename = StringUtils.cleanPath(file.getOriginalFilename());
         String newFilename = "";
         try {
             if (file.isEmpty())
                 throw new StorageException("El fichero subido está vacío");
+
+            if(!formats.contains(StringUtils.getFilenameExtension(filename)))
+                throw new StorageException("No se permite ese formato de archivo.");
 
             newFilename = filename;
             while(Files.exists(rootLocation.resolve(newFilename))) {
@@ -114,8 +119,12 @@ public class FileSystemStorageService implements StorageService {
     }
 
     @Override
-    public void deleteFile(String filename) {
-        // Pendiente
+    public void deleteFile(String filename) throws IOException {
+
+
+
+        Files.deleteIfExists(Paths.get("/uploads", filename));
+
     }
 
     @Override

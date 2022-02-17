@@ -48,10 +48,10 @@ public class UserEntity implements UserDetails {
 
     @Builder.Default
     @JsonIgnore
-    @OneToMany(mappedBy = "seguido", fetch = FetchType.LAZY) //Para las personas que sigamos
+    @OneToMany(mappedBy = "seguido",  fetch = FetchType.EAGER) //Para las personas que sigamos
     private List<Seguimiento> seguimientos = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "user", orphanRemoval = true, cascade = CascadeType.REMOVE, fetch = FetchType.LAZY)
     @Builder.Default
     private List<Publicacion> publicaciones = new ArrayList<>();
 
