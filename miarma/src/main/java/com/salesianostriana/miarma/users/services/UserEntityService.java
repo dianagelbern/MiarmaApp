@@ -33,6 +33,10 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
         return this.repositorio.findFirstByEmail(userName);
     }
 
+    public Optional<UserEntity> findByUserNick(String nick){
+        return this.repositorio.findFirstByNick(nick);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.repositorio.findFirstByEmail(email)

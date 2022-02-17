@@ -27,7 +27,9 @@ public class ApiError {
     private LocalDateTime fecha = LocalDateTime.now();
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    private List<ApiSubError> subErrors;
+    private List<ApiSubError> apiSubErrors;
+
+/*
 
     public ApiError(HttpStatus estado, int codigo, String mensaje, String ruta, LocalDateTime fecha) {
         this.estado = estado;
@@ -37,6 +39,7 @@ public class ApiError {
         this.fecha = fecha;
     }
 
+
     public ApiError(HttpStatus estado, String mensaje, String ruta, List<ApiSubError> subErrors) {
         this.estado = estado;
         this.mensaje = mensaje;
@@ -44,6 +47,9 @@ public class ApiError {
         this.subErrors = subErrors;
     }
 
+
     public ApiError(HttpStatus status, String message, String requestURI) {
     }
+ */
+
 }

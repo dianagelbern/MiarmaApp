@@ -1,8 +1,6 @@
 package com.salesianostriana.miarma.errores.excepciones;
 
-import com.salesianostriana.miarma.exception.StorageException;
-
-public class FileNotFoundException extends StorageException {
+public class FileNotFoundException extends RuntimeException {
 
     public FileNotFoundException(String message) {
         super(message);

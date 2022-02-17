@@ -22,5 +22,7 @@ public interface StorageService {
 
     void deleteAll();
 
+
+
     BufferedImage resizeImage(BufferedImage originalImage, int targetWidth, int targetHeight) throws Exception;
 }

@@ -94,10 +94,13 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
         Optional<Publicacion> publicacion = repository.findById(id);
         Publicacion publiEncontrada = publicacion.get();
 
-        if(publicacion.isPresent()) {
-            //if(publiEncontrada.getUser().isPrivado() == false ){
-                return repository.findById(id);
-            //}
+        //Si la publicación es privada pero sigo al usuario ->
+        //Si la publicación es pública
+        //Si la publicación es publica pero sigo al usuario
+        //Si la publicación es privada y el usuario no es seguido
+
+        if(!publiEncontrada.getUser().isPrivado()) {
+            return repository.findById(id);
         }else{
             throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
         }

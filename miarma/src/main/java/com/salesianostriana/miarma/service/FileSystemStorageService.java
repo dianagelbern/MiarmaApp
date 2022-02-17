@@ -1,8 +1,8 @@
 package com.salesianostriana.miarma.service;
 
 import com.salesianostriana.miarma.config.StorageProperties;
-import com.salesianostriana.miarma.exception.FileNotFoundException;
-import com.salesianostriana.miarma.exception.StorageException;
+import com.salesianostriana.miarma.errores.excepciones.FileNotFoundException;
+import com.salesianostriana.miarma.errores.excepciones.StorageException;
 import com.salesianostriana.miarma.service.base.StorageService;
 import com.salesianostriana.miarma.utils.MediaTypeUrlResource;
 import net.coobird.thumbnailator.Thumbnails;
@@ -136,18 +136,3 @@ public class FileSystemStorageService implements StorageService {
         return ImageIO.read(inputStream);
     }
 }
-/*
-        byte[] byteImg = Files.readAllBytes(Paths.get("triana.jpeg"));
-
-        BufferedImage original = ImageIO.read(
-                new ByteArrayInputStream(byteImg)
-        );
-
-
-        BufferedImage scaled = Scalr.resize(original, 512);
-
-
-        OutputStream out = Files.newOutputStream(Paths.get("triana-thumb.jpeg"));
-
-        ImageIO.write(scaled, "jpg", out);
-         */

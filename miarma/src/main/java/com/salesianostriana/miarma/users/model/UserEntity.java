@@ -1,8 +1,12 @@
 package com.salesianostriana.miarma.users.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.salesianostriana.miarma.models.Publicacion;
+import com.salesianostriana.miarma.models.Seguimiento;
 import lombok.*;
+import org.hibernate.FetchMode;
+import org.hibernate.annotations.Fetch;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
@@ -42,8 +46,10 @@ public class UserEntity implements UserDetails {
 
     private boolean privado;
 
-    @ManyToMany
-    private List<UserEntity> followers;
+    @Builder.Default
+    @JsonIgnore
+    @OneToMany(mappedBy = "seguido", fetch = FetchType.LAZY) //Para las personas que sigamos
+    private List<Seguimiento> seguimientos = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", orphanRemoval = true, fetch = FetchType.EAGER)
     @Builder.Default
