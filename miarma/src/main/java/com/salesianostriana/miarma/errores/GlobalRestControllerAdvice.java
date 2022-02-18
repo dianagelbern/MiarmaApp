@@ -3,6 +3,7 @@ package com.salesianostriana.miarma.errores;
 import com.salesianostriana.miarma.errores.excepciones.ElementosRepetidosException;
 import com.salesianostriana.miarma.errores.excepciones.RepeatedElementsException;
 import com.salesianostriana.miarma.errores.excepciones.SingleEntityNotFoundException;
+import com.salesianostriana.miarma.errores.excepciones.StorageException;
 import com.salesianostriana.miarma.errores.modelo.ApiError;
 import com.salesianostriana.miarma.errores.modelo.ApiSubError;
 import com.salesianostriana.miarma.errores.modelo.ApiValidationSubError;
@@ -75,6 +76,11 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
                 subErrorList.isEmpty() ? null : subErrorList
 
         );
+    }
+
+    @ExceptionHandler({StorageException.class})
+    public ResponseEntity<?> handleStorageException(StorageException ex, WebRequest request){
+        return this.buildApiErrorWithSubError(ex, HttpStatus.BAD_REQUEST, request, new ArrayList<>());
     }
 
     @ExceptionHandler({ConstraintViolationException.class})

@@ -57,11 +57,6 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
                 .path(filename)
                 .toUriString();
 
-
-
-
-        if(newUser.getPassword().contentEquals(newUser.getPassword2())) {
-
             UserEntity userEntity = UserEntity.builder()
                     .nick(newUser.getNick())
                     .password(passwordEncoder.encode(newUser.getPassword()))
@@ -72,10 +67,6 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
                     .avatar(uri)
                     .build();
             return save(userEntity);
-
-        }else {
-            return null;
-        }
 
     }
 

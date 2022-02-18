@@ -39,31 +39,52 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
 
     public Publicacion create(MultipartFile file, CreatePublicacionDto p, UserEntity user) throws Exception {
         String filename = storageService.store(file);
-        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(filename)
-                .toUriString();
 
-        String filenameScale = storageService.store(file);
-        BufferedImage original = ImageIO.read(file.getInputStream());
-        BufferedImage reescalada = storageService.resizeImage(original, 128, 128);
-        ImageIO.write(reescalada, "jpg", Files.newOutputStream(storageService.load(filenameScale)));
+        List<String> formats = List.of("png", "jpg");
+        String video = ("mp4");
 
-        String uriScale = ServletUriComponentsBuilder.fromCurrentContextPath()
-                .path("/download/")
-                .path(filename)
-                .toUriString();
+        if (formats.contains(StringUtils.getFilenameExtension(filename))) {
+            String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/download/")
+                    .path(filename)
+                    .toUriString();
 
-        Publicacion nuevaP = Publicacion.builder()
-                .titulo(p.getTitulo())
-                .texto(p.getTexto())
-                .privada(p.isPrivada())
-                .multimedia(uri)
-                .user(user)
-                .multimediaScale(uriScale)
-                .build();
+            String filenameScale = storageService.store(file);
+            BufferedImage original = ImageIO.read(file.getInputStream());
+            BufferedImage reescalada = storageService.resizeImage(original, 128, 128);
+            ImageIO.write(reescalada, "jpg", Files.newOutputStream(storageService.load(filenameScale)));
 
-        return repository.save(nuevaP);
+            String uriScale = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/download/")
+                    .path(filename)
+                    .toUriString();
+
+            Publicacion nuevaP = Publicacion.builder()
+                    .titulo(p.getTitulo())
+                    .texto(p.getTexto())
+                    .privada(p.isPrivada())
+                    .multimedia(uri)
+                    .user(user)
+                    .multimediaScale(uriScale)
+                    .build();
+            return repository.save(nuevaP);
+        }else if(video.contains(StringUtils.getFilenameExtension(filename))){
+            String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                    .path("/download/")
+                    .path(filename)
+                    .toUriString();
+            Publicacion nuevaP = Publicacion.builder()
+                    .titulo(p.getTitulo())
+                    .texto(p.getTexto())
+                    .privada(p.isPrivada())
+                    .multimedia(uri)
+                    .user(user)
+                    .build();
+            return repository.save(nuevaP);
+        }else{
+            throw new StorageException("El fichero subido está vacío");
+        }
+
     }
 
     public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id, MultipartFile file) {
@@ -76,9 +97,6 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                 .path(filename)
                 .toUriString();
 
-
-
-
         if (publicacion.isPresent()) {
             Publicacion publiEncontrada = publicacion.get();
 
@@ -90,7 +108,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
 
             return repository.save(publiEncontrada);
         } else {
-            throw new EntityNotFoundException("No se encontró ninguna publicación con ese id");
+            throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
         }
     }
 
@@ -100,7 +118,6 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
         if (publicacion.isPresent()) {
             Publicacion publiEncontrada = publicacion.get();
 
-
             if (publiEncontrada.getUser().getNick().equals(user.getNick())) {
                 String nombreFichero = StringUtils.cleanPath(publiEncontrada.getMultimedia());
                 String[] arrayNombre = nombreFichero.split("/");
@@ -109,7 +126,6 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
             }
         } else
             throw new SingleEntityNotFoundException(id.toString(), Publicacion.class);
-
     }
 
     public Optional<Publicacion> findOne(Long id, UserEntity user) {
