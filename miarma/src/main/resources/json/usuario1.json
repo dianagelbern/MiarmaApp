@@ -1,0 +1,8 @@
+{
+    "nick": "Carmen",
+    "password": "mipassword",
+    "password2": "mipassword",
+    "email": "carmen@gmail.com",
+    "fechaNacimiento": "20-01-1996",
+    "privado": "true"
+}

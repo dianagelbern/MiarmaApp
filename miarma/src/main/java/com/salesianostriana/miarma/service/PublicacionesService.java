@@ -43,6 +43,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
         List<String> formats = List.of("png", "jpg");
         String video = ("mp4");
 
+        //Si el fichero tiene el fotmato png o jpglo guardará
         if (formats.contains(StringUtils.getFilenameExtension(filename))) {
             String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/download/")
@@ -68,6 +69,8 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
                     .multimediaScale(uriScale)
                     .build();
             return repository.save(nuevaP);
+
+            //Si el fichero tiene un formato de video permitirá introductirlo sin la propiedad de escalarlo ya que no la tiene
         }else if(video.contains(StringUtils.getFilenameExtension(filename))){
             String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                     .path("/download/")
@@ -89,8 +92,6 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
 
     public Publicacion edit(CreatePublicacionDto p, UserEntity user, Long id, MultipartFile file) {
         Optional<Publicacion> publicacion = repository.findById(id);
-
-
         String filename = storageService.store(file);
         String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
                 .path("/download/")
@@ -99,8 +100,7 @@ public class PublicacionesService extends BaseService<Publicacion, Long, Publica
 
         if (publicacion.isPresent()) {
             Publicacion publiEncontrada = publicacion.get();
-
-            publiEncontrada.setId(id);
+            publiEncontrada.setId(p.getId());
             publiEncontrada.setTitulo(p.getTitulo());
             publiEncontrada.setTexto(p.getTexto());
             publiEncontrada.setPrivada(p.isPrivada());

@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 @Component
 @RequiredArgsConstructor
 public class Initdata {
-/*
+
     public final UserEntityService userEntityService;
     public final PublicacionesService publicacionesService;
     public final SeguimientoService seguimientoService;
@@ -74,15 +74,8 @@ public class Initdata {
         userEntityService.save(hector);
 
 
-        /*
-        Seguimiento manoloS = Seguimiento.builder().seguido(hector).build();
-        Seguimiento hectorS = Seguimiento.builder().seguido(manolo).build();
-
-        seguimientoService.save(manoloS);
-        seguimientoService.save(hectorS);
-
 
 
     }
-    */
+
 }
